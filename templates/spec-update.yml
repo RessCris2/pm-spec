@@ -1,0 +1,73 @@
+# Keep docs/spec/ in sync with every pull request.
+# Copy to .github/workflows/spec-update.yml in the repository the spec documents.
+#
+# Needs:
+#   - secret ANTHROPIC_API_KEY (Settings > Secrets and variables > Actions)
+#   - SKILL_REPO below: where the codebase-spec skill is published
+#     (add a token to the second checkout if that repository is private)
+#
+# Each run costs API usage. Runs on PRs from forks are skipped: GitHub withholds
+# secrets there and the token cannot push.
+
+name: Spec update
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: spec-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  SKILL_REPO: OWNER/codebase-spec   # <- change
+  SPEC_DIR: docs/spec
+
+jobs:
+  spec:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      # The spec's own commit triggers a new run; skip it so runs do not loop.
+      - name: Skip runs triggered by a spec commit
+        id: guard
+        run: |
+          if git log -1 --format=%s | grep -q '^docs(spec):'; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v5
+        if: steps.guard.outputs.skip != 'true'
+        with:
+          repository: ${{ env.SKILL_REPO }}
+          path: .claude/skills/codebase-spec
+
+      - name: Install PlantUML (local rendering only)
+        if: steps.guard.outputs.skip != 'true'
+        run: sudo apt-get update -q && sudo apt-get install -y -q plantuml
+
+      - uses: anthropics/claude-code-action@v1
+        if: steps.guard.outputs.skip != 'true'
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          allow_fork_prs: "false"
+          claude_args: >-
+            --max-turns 80
+            --allowedTools "Read,Edit,Write,Glob,Grep,Task,Bash(python3:*),Bash(git:*),Bash(gh pr comment:*)"
+          prompt: |
+            Use the codebase-spec skill, Mode 2 (update the spec for a change).
+            REPO: this checkout. SPEC_DIR: ${{ env.SPEC_DIR }}. BASE: origin/${{ github.base_ref }}.
+            PR: #${{ github.event.pull_request.number }} in ${{ github.repository }}.
+            If ${{ env.SPEC_DIR }}/spec.md does not exist, do not write one; comment that the
+            spec has not been created yet and stop.
+            Commit only ${{ env.SPEC_DIR }}, push to ${{ github.event.pull_request.head.ref }},
+            and comment on the PR as references/update.md describes.
