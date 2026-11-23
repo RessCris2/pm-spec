@@ -1,9 +1,9 @@
 ---
-name: codebase-spec
+name: pm-spec
 description: Write and maintain an as-built functional spec of an existing codebase, for people who did not write it - entities and their relationships, entity lifecycles (state machines), business rules the code enforces, key flows, pages, and prototypes for what is missing, every fact linked to the source lines that prove it. Keeps the spec current: on each pull request it finds the sections the change made stale, rewrites them, and commits the update to the PR. Use when the user wants a PRD, product spec, functional spec or domain model reverse-engineered from code, documentation of business rules or state machines, a handover document, or to keep such a spec in sync with code - for example "根据代码写一份产品规格", "梳理这个系统的实体和状态", "这个项目有哪些页面和业务规则", "spec 跟着 PR 自动更新". Not for designing a new product from scratch and not for explaining code structure file by file.
 ---
 
-# Codebase Spec
+# PM Spec
 
 Turn an existing codebase into a spec a product manager, designer, tester or
 new engineer can read without opening the code: what the system holds, how

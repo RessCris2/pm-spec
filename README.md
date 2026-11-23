@@ -1,4 +1,4 @@
-# codebase-spec
+# pm-spec
 
 [中文](README.zh-CN.md)
 
@@ -65,7 +65,7 @@ forks).
 ## Install
 
 ```bash
-git clone <this repository> ~/.claude/skills/codebase-spec
+git clone https://github.com/RessCris2/pm-spec.git ~/.claude/skills/pm-spec
 ```
 
 Then ask, for example: "根据代码写一份功能规格" or "Write a functional spec

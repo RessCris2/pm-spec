@@ -3,7 +3,7 @@
 #
 # Needs:
 #   - secret ANTHROPIC_API_KEY (Settings > Secrets and variables > Actions)
-#   - SKILL_REPO below: where the codebase-spec skill is published
+#   - SKILL_REPO below: where the pm-spec skill is published
 #     (add a token to the second checkout if that repository is private)
 #
 # Each run costs API usage. Runs on PRs from forks are skipped: GitHub withholds
@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  SKILL_REPO: OWNER/codebase-spec   # <- change
+  SKILL_REPO: RessCris2/pm-spec   # where the skill is published
   SPEC_DIR: docs/spec
 
 jobs:
@@ -49,7 +49,7 @@ jobs:
         if: steps.guard.outputs.skip != 'true'
         with:
           repository: ${{ env.SKILL_REPO }}
-          path: .claude/skills/codebase-spec
+          path: .claude/skills/pm-spec
 
       - name: Install PlantUML (local rendering only)
         if: steps.guard.outputs.skip != 'true'
@@ -64,7 +64,7 @@ jobs:
             --max-turns 80
             --allowedTools "Read,Edit,Write,Glob,Grep,Task,Bash(python3:*),Bash(git:*),Bash(gh pr comment:*)"
           prompt: |
-            Use the codebase-spec skill, Mode 2 (update the spec for a change).
+            Use the pm-spec skill, Mode 2 (update the spec for a change).
             REPO: this checkout. SPEC_DIR: ${{ env.SPEC_DIR }}. BASE: origin/${{ github.base_ref }}.
             PR: #${{ github.event.pull_request.number }} in ${{ github.repository }}.
             If ${{ env.SPEC_DIR }}/spec.md does not exist, do not write one; comment that the

@@ -1,4 +1,4 @@
-# codebase-spec
+# pm-spec
 
 [English](README.md)
 
@@ -49,7 +49,7 @@ agent 只更新受影响的部分，记入 `changes.md`，提交到 PR 分支，
 ## 安装
 
 ```bash
-git clone <本仓库地址> ~/.claude/skills/codebase-spec
+git clone https://github.com/RessCris2/pm-spec.git ~/.claude/skills/pm-spec
 ```
 
 然后提出需求，例如：“根据代码写一份功能规格”。

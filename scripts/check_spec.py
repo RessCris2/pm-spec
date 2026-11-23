@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check a spec written by the codebase-spec skill against the code.
+"""Check a spec written by the pm-spec skill against the code.
 
 Usage:
   check_spec.py SPEC_DIR [--repo REPO] [--diff BASE] [--fix-lines] [--json OUT]
