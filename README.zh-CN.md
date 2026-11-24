@@ -13,6 +13,7 @@
 ```
 docs/spec/
 ├── spec.md          # 规格
+├── spec.pdf         # PDF 版，spec.md 或图有变化就重新生成
 ├── changes.md       # 每个 PR 对规格的改动
 ├── diagrams/        # PlantUML 源文件和渲染出的 SVG
 └── prototypes/      # SVG 原型，ASCII 稿确认后才画
@@ -29,6 +30,7 @@ docs/spec/
 | 校验每个链接、行号和引文，标出没有来源的事实 | `scripts/check_spec.py` |
 | 删除重复和不必要的内容 | 独立子代理（`references/reviewer.md`） |
 | 在本地把 PlantUML 渲染成 SVG | `scripts/render_diagrams.py` |
+| 用本地无头 Chrome 把 spec.md 打印成 PDF，没变化就跳过 | `scripts/render_pdf.py` |
 
 写作规则：一个事实只写一处；删掉不影响理解的内容；现状和建议分开；代码不能直接证明的标〔推断〕，代码里没有的标〔未知〕。
 

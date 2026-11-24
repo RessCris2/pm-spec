@@ -106,6 +106,15 @@ class TestCheck(Base):
         self.write("docs/spec/spec.md", SPEC.replace("status=pending", "status=confirmed"))
         self.assertTrue(any("draw prototypes/refund.svg" in x[2] for x in self.problems()))
 
+    def test_pdf_missing_then_stale_is_warned(self):
+        import render_pdf
+        self.assertTrue(any("PDF missing" in x[2] for x in self.problems()))
+        self.write("docs/spec/spec.pdf", "%PDF")
+        self.write("docs/spec/" + render_pdf.FINGERPRINT, render_pdf.fingerprint(self.spec_dir))
+        self.assertFalse(any(x[1] == "spec.pdf" for x in self.problems()))
+        self.write("docs/spec/spec.md", SPEC + "\n新增一行\n")
+        self.assertTrue(any("PDF older" in x[2] for x in self.problems()))
+
     def test_duplicates_found(self):
         self.write("docs/spec/spec.md", SPEC + "\n订单超过三十分钟未支付就会被系统自动取消。\n\n另外，订单超过三十分钟未支付就会被系统自动取消\n")
         self.assertTrue(cs.duplicates(cs.Spec(self.spec_dir, self.tmp)))

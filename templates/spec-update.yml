@@ -51,9 +51,12 @@ jobs:
           repository: ${{ env.SKILL_REPO }}
           path: .claude/skills/pm-spec
 
-      - name: Install PlantUML (local rendering only)
+      - name: Install PlantUML, CJK fonts and markdown (local rendering only)
         if: steps.guard.outputs.skip != 'true'
-        run: sudo apt-get update -q && sudo apt-get install -y -q plantuml
+        # Chrome is preinstalled on ubuntu-latest; render_pdf.py prints the PDF with it.
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q plantuml fonts-noto-cjk python3-markdown
 
       - uses: anthropics/claude-code-action@v1
         if: steps.guard.outputs.skip != 'true'

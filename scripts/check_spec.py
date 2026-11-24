@@ -6,7 +6,8 @@ Usage:
 
 Without --diff: verifies every evidence link in SPEC_DIR/*.md (file exists,
 line range inside the file, quote present in those lines), flags facts in
-evidence sections that cite nothing, checks prototype and diagram rules, and
+evidence sections that cite nothing, checks prototype and diagram rules, warns when spec.pdf is missing or
+no longer matches spec.md and its SVGs, and
 lists sentences that look duplicated (input for the reviewer).
 
 With --diff BASE (a commit, branch or tag): compares the code at the merge
@@ -221,6 +222,15 @@ def check(spec, problems):
                 svg = os.path.join(diagrams, f[:-5] + ".svg")
                 if not os.path.exists(svg) or os.path.getmtime(svg) < os.path.getmtime(os.path.join(diagrams, f)):
                     problems.append(("warning", f"diagrams/{f}", "SVG missing or older than source; run render_diagrams.py"))
+
+    # The PDF is a copy for readers without the repository: it must follow spec.md.
+    if os.path.exists(os.path.join(spec.spec_dir, "spec.md")):
+        from render_pdf import FINGERPRINT, fingerprint
+        fp_file = os.path.join(spec.spec_dir, FINGERPRINT)
+        if not os.path.exists(os.path.join(spec.spec_dir, "spec.pdf")):
+            problems.append(("warning", "spec.pdf", "PDF missing; run render_pdf.py"))
+        elif not os.path.exists(fp_file) or open(fp_file).read().strip() != fingerprint(spec.spec_dir):
+            problems.append(("warning", "spec.pdf", "PDF older than spec.md or its diagrams; run render_pdf.py"))
 
 
 def duplicates(spec, limit=30):

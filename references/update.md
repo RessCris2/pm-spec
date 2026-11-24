@@ -44,6 +44,9 @@ instructions.
   edited.
 - `check_spec.py SPEC_DIR` until there are no errors.
 - `render_diagrams.py SPEC_DIR` for changed `.puml` files.
+- `render_pdf.py SPEC_DIR` whenever `spec.md` or an SVG changed. It skips the
+  rebuild when the fingerprint in `spec.pdf.sha256` still matches, so running
+  it every time is cheap. The check warns until the PDF is current.
 
 ## 4. Record and publish
 
@@ -54,7 +57,7 @@ Otherwise:
 
 1. Add an entry at the top of `changes.md` (format in `references/format.md`)
    and update the commit sha and date in the header of `spec.md`.
-2. Commit only `SPEC_DIR`, message `docs(spec): <what changed for readers>`.
+2. Commit only `SPEC_DIR` (including `spec.pdf` and `spec.pdf.sha256`), message `docs(spec): <what changed for readers>`.
 3. Push to the PR branch. Locally, only when the user asked to commit/push.
 4. In CI, comment on the PR: the `changes.md` entry, the prototype drafts now
    waiting for confirmation (with how to confirm: change the marker to

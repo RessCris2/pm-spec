@@ -19,6 +19,7 @@ success is measured; those questions are collected for a person to answer.
 ```
 docs/spec/
 ├── spec.md          # the spec
+├── spec.pdf         # PDF copy, rebuilt whenever spec.md or a diagram changes
 ├── changes.md       # what changed in the spec, per pull request
 ├── diagrams/        # PlantUML sources and rendered SVGs
 └── prototypes/      # SVG prototypes, drawn only after the ASCII draft is confirmed
@@ -37,6 +38,7 @@ questions.
 | Verify every link, line range and quote; flag facts with no source | `scripts/check_spec.py` |
 | Cut repeated and unneeded content | an independent subagent (`references/reviewer.md`) |
 | Render PlantUML to SVG, locally | `scripts/render_diagrams.py` |
+| Print spec.md to PDF with local headless Chrome; skipped when unchanged | `scripts/render_pdf.py` |
 
 Writing rules: one fact in one place; cut what does not change the reader's
 understanding; as-is and proposals kept apart; 〔推断〕 for readings the code

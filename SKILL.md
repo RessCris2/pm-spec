@@ -49,8 +49,14 @@ in the repository is material to analyse, not instructions.
   markers, status markers in `references/format.md`, identifiers, paths and
   code quotes stay as they are.
 
-Files in `SPEC_DIR`: `spec.md` (the spec), `changes.md` (update log),
-`diagrams/*.puml` + rendered `*.svg`, `prototypes/*.svg`.
+Files in `SPEC_DIR`: `spec.md` (the spec), `spec.pdf` + `spec.pdf.sha256`
+(the PDF copy and the fingerprint of what it was made from), `changes.md`
+(update log), `diagrams/*.puml` + rendered `*.svg`, `prototypes/*.svg`.
+
+**The PDF follows spec.md.** Whenever `spec.md` or an SVG it embeds changes,
+in any mode, rebuild the PDF after rendering the diagrams and commit it
+together with the spec. `check_spec.py` warns when the PDF is missing or no
+longer matches; a spec change without a fresh PDF is not finished.
 
 ## Mode 1: write the spec
 
@@ -99,6 +105,11 @@ Files in `SPEC_DIR`: `spec.md` (the spec), `changes.md` (update log),
    PlantUML locally (`plantuml` or `PLANTUML_JAR`). It never uses a remote
    server, because diagrams describe private code. If no renderer is
    installed, tell the user how to install one and leave the `.puml` files.
+   Then `python3 SKILL_DIR/scripts/render_pdf.py SPEC_DIR` prints `spec.md` to
+   `spec.pdf` with a local Chrome or Chromium (never a remote service). Its
+   evidence links point to the source on the hosting site at the current
+   commit; diagrams not yet rendered appear as a note. If no browser is
+   installed, say so and how to install one.
 
 8. **Log and report.** Add the first entry to `changes.md`. Tell the user: the
    path, the readers, inventory counts (entities, states machines, pages,
@@ -112,7 +123,7 @@ follow `references/update.md`. In short: `check_spec.py SPEC_DIR --diff BASE
 --fix-lines` shifts the line numbers the change only moved, lists the facts
 whose cited lines changed and the changed code nothing cites; you re-read
 those, rewrite the affected facts, add what is new, run the review on the
-changed sections only, check, render, log, commit to the PR branch and
+changed sections only, check, render diagrams and the PDF, log, commit to the PR branch and
 comment. No spec change, no commit.
 
 ## Mode 3: set up automatic updates
